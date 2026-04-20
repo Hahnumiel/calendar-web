@@ -663,11 +663,14 @@ with tab2:
 
     st.subheader("七天主视图")
     for _, row_a in window_dfr.iterrows():
-        st.text(build_window_day_line1(row_a, cen_date))
-        st.text(build_window_day_line2(row_a))
-        st.text(build_window_day_line3(row_a))
-        st.divider()
-
+        day_text = "\n".join([
+            build_window_day_line1(row_a, cen_date),
+            build_window_day_line2(row_a),
+            build_window_day_line3(row_a),
+            "-" * 36
+        ])
+        st.text(day_text)
+    
     st.subheader("节气")
     for line in build_event_section(dfr, cen_date, start_date_a, end_date_a, ["节气", "物候"], "时间点"):
         st.text(line)

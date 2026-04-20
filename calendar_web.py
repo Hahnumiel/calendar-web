@@ -725,8 +725,9 @@ with st.sidebar:
         )
 
         anchor_date_input = st.date_input(
-            "选择起始日",
+            "选择关键日",
             value=anchor_date_default,
+            min_value=date(1900, 1, 1),
             key="anchor_date"
         )
 

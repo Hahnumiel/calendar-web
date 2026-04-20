@@ -98,7 +98,7 @@ def build_prev_next_line(row, center_date, prefix_type: str, value_cols: list[st
         return ""
 
     diff_days = abs((row["日期"] - center_date).days)
-    prefix = f"        {diff_days}日{'前' if prefix_type == 'prev' else '后'}："
+    prefix = f"      {diff_days}日{'前' if prefix_type == 'prev' else '后'}："
 
     parts = [prefix + format_md_week(row)]
 
@@ -174,7 +174,7 @@ def row_to_lines(row, center_date, df: pd.DataFrame):
         if has_value(row.get(col, "")):
             shichen_values_b.append(str(row[col]))
     if shichen_values_b:
-        lines.append(f"        {' '.join(shichen_values_b)}")
+        lines.append(f"               {' '.join(shichen_values_b)}")
 
     # 6. 节气：清明 3 虹始见 07:00
     jieqi_parts = []
@@ -291,7 +291,7 @@ def row_to_lines(row, center_date, df: pd.DataFrame):
     if has_value(row.get("日卦", "")):
         gua_parts_b.append(f"【日】{row['日卦']}")
     if gua_parts_b:
-        lines.append(f"    {' '.join(gua_parts_b)}")
+        lines.append(f"        {' '.join(gua_parts_b)}")
 
     return "\n".join(lines)
 

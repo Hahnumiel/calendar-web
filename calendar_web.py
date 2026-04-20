@@ -429,7 +429,7 @@ def build_event_section(
         lines.append(build_event_line(next_row, center_date, value_cols, time_col))
 
     if not lines:
-        return [f"{title}：（无）"]
+        return [f"（无）"]
 
     return lines
 
@@ -664,7 +664,7 @@ with tab2:
     st.subheader("七天主视图")
     for _, row_a in window_dfr.iterrows():
         day_text = "\n".join([
-            "-" * 72,
+            "-" * 60,
             build_window_day_line1(row_a, cen_date),
             build_window_day_line2(row_a),
             build_window_day_line3(row_a)

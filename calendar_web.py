@@ -1,5 +1,6 @@
 import streamlit as st  # Streamlit：用来把 Python 程序做成网页
 import pandas as pd  # pandas：负责读取和处理 Excel 表格
+import time as pytime
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast
@@ -646,6 +647,10 @@ def get_default_date(df):
 
 # 从浏览器cookie中读取用户之前保存
 def get_anchor_date_from_cookie(fallback: date) -> date | None:
+    # 先让组件把浏览器里的 cookie 同步进来
+    cookie_controller.getAll()
+    pytime.sleep(1)
+
     cookie_value = cookie_controller.get("anchor_date")
 
     if not cookie_value:
@@ -672,7 +677,11 @@ def save_anchor_date_to_cookie(anchor_date_a: date | None):
             except KeyError:
                 pass
     else:
-        cookie_controller.set("anchor_date", anchor_date_a.isoformat())
+        cookie_controller.set(
+            "anchor_date",
+            anchor_date_a.isoformat(),
+            max_age=60 * 60 * 24 * 365
+        )
 
 
 # 把各种可能的值，统一整理成真正的 date
@@ -735,6 +744,9 @@ if "use_anchor_date" not in st.session_state:
 if "anchor_date" not in st.session_state:
     st.session_state.anchor_date = cookie_anchor_date if cookie_anchor_date is not None else default_date
 
+if "last_use_anchor_date" not in st.session_state:
+    st.session_state.last_use_anchor_date = st.session_state.use_anchor_date
+
 with st.sidebar:
     st.subheader("我的天数设置")
 
@@ -767,7 +779,11 @@ with st.sidebar:
         save_anchor_date_to_cookie(anchor_date)
     else:
         anchor_date = None
-        save_anchor_date_to_cookie(None)
+        # 只有从“开”切到“关”时才删 cookie
+        if st.session_state.last_use_anchor_date:
+            save_anchor_date_to_cookie(None)
+
+    st.session_state.last_use_anchor_date = use_anchor_date
 
 
 tab1, tab2, tab3 = st.tabs(["一天详情", "七天播报（±3）", "单项查询"])

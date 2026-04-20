@@ -3,6 +3,7 @@ import pandas as pd  # pandas：负责读取和处理 Excel 表格
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast
+from streamlit_cookies_controller import CookieController
 
 FILE_PATH = "wz.xlsx"
 
@@ -643,6 +644,31 @@ def get_default_date(df):
         return today
     return max_date
 
+# 从浏览器cookie中读取用户之前保存
+def get_anchor_date_from_cookie(fallback: date) -> date | None:
+    cookie_value = cookie_controller.get("anchor_date")
+
+    if not cookie_value:
+        return None
+
+    try:
+        ts = pd.Timestamp(cookie_value)
+    except (ValueError, TypeError):
+        return fallback
+
+    if pd.isna(ts):
+        return fallback
+
+    return cast(date, ts.to_pydatetime().date())
+
+
+# 把当前用户设定日期写入浏览器cookie
+def save_anchor_date_to_cookie(anchor_date_a: date | None):
+    if anchor_date_a is None:
+        cookie_controller.remove("anchor_date")
+    else:
+        cookie_controller.set("anchor_date", anchor_date_a.isoformat())
+
 
 # 把各种可能的值，统一整理成真正的 date
 def normalize_date_value(value, fallback: date) -> date:
@@ -675,24 +701,17 @@ def normalize_date_value(value, fallback: date) -> date:
     return fallback
 
 
-# 先看 URL 里有没有 anchor_date
-def get_anchor_date_from_url_or_default(default_date_zi):
-    anchor_str = st.query_params.get("anchor_date", "")
-    if anchor_str:
-        try:
-            return pd.Timestamp(anchor_str).date()
-        except (ValueError, TypeError):
-            return default_date_zi
-    return default_date_zi
-
-
 # 天数转化
 def calc_user_day_number(row_date, anchor_date_a):
     if anchor_date_a is None:
         return ""
 
-    delta = (row_date - anchor_date).days
+    delta = (row_date - anchor_date_a).days
     return delta + 1 if delta >= 0 else delta
+
+
+# 这里放 CookieController 实例
+cookie_controller = CookieController()
 
 
 # Streamlit 页面设置
@@ -702,13 +721,14 @@ st.title("我的日历本")
 dfr = get_data()
 default_date = get_default_date(dfr)
 
-# 用户自定义起始日（带会话记忆 + URL记忆）
+# 用户自定义起始日（会话 + Cookie）
+cookie_anchor_date = get_anchor_date_from_cookie(default_date)
+
 if "use_anchor_date" not in st.session_state:
-    # 只要 URL 里有 anchor_date，就默认启用
-    st.session_state.use_anchor_date = bool(st.query_params.get("anchor_date", ""))
+    st.session_state.use_anchor_date = cookie_anchor_date is not None
 
 if "anchor_date" not in st.session_state:
-    st.session_state.anchor_date = get_anchor_date_from_url_or_default(default_date)
+    st.session_state.anchor_date = cookie_anchor_date if cookie_anchor_date is not None else default_date
 
 with st.sidebar:
     st.subheader("我的天数设置")
@@ -738,9 +758,12 @@ with st.sidebar:
         else:
             anchor_date = anchor_date_input
 
-        st.query_params.anchor_date = anchor_date.isoformat()
+        # 写入 cookie
+        save_anchor_date_to_cookie(anchor_date)
     else:
         anchor_date = None
+        save_anchor_date_to_cookie(None)
+
 
 tab1, tab2, tab3 = st.tabs(["一天详情", "七天播报（±3）", "单项查询"])
 

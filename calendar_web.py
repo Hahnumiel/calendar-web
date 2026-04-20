@@ -667,7 +667,7 @@ with tab2:
             build_window_day_line1(row_a, cen_date),
             build_window_day_line2(row_a),
             build_window_day_line3(row_a),
-            "-" * 36
+            "-" * 70
         ])
         st.text(day_text)
     

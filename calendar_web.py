@@ -404,7 +404,6 @@ def build_event_section(
     center_date,
     range_start,
     range_end,
-    title: str,
     value_cols: list[str],
     time_col: str | None = None,
 ):
@@ -417,7 +416,7 @@ def build_event_section(
     prev_row = cast(Series | None, before.iloc[-1] if not before.empty else None)
     next_row = cast(Series | None, after.iloc[0] if not after.empty else None)
 
-    lines = [f"{title}："]
+    lines = []
 
     if prev_row is not None:
         lines.append(build_event_line(prev_row, center_date, value_cols, time_col))
@@ -429,7 +428,7 @@ def build_event_section(
     if next_row is not None:
         lines.append(build_event_line(next_row, center_date, value_cols, time_col))
 
-    if len(lines) == 1:
+    if not lines:
         return [f"{title}：（无）"]
 
     return lines
@@ -454,7 +453,7 @@ def build_astro_section(df: pd.DataFrame, center_date):
     end_date = center_date + timedelta(days=7)
     window_df = df[(df["日期"] >= start_date) & (df["日期"] <= end_date)].copy()
 
-    lines = ["天象："]
+    lines = []
     found = False
 
     for _, row in window_df.iterrows():
@@ -476,7 +475,7 @@ def build_astro_section(df: pd.DataFrame, center_date):
                 found = True
 
     if not found:
-        return ["天象：（无）"]
+        return ["（无）"]
 
     return lines
 
@@ -519,7 +518,7 @@ def build_retrograde_section(df: pd.DataFrame, center_date):
         ("冥王逆行", "冥王星"),
     ]
 
-    lines = ["行星逆行："]
+    lines = []
 
     for field, display_name in retrograde_map:
         intervals = build_retrograde_intervals(df, field)
@@ -670,11 +669,11 @@ with tab2:
         st.divider()
 
     st.subheader("节气")
-    for line in build_event_section(dfr, cen_date, start_date_a, end_date_a, "节气", ["节气", "物候"], "时间点"):
+    for line in build_event_section(dfr, cen_date, start_date_a, end_date_a, ["节气", "物候"], "时间点"):
         st.text(line)
 
     st.subheader("月相")
-    for line in build_event_section(dfr, cen_date, start_date_a, end_date_a, "月相", ["月相"], "月相时间"):
+    for line in build_event_section(dfr, cen_date, start_date_a, end_date_a, ["月相"], "月相时间"):
         st.text(line)
 
     st.subheader("天象")

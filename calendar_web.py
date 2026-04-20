@@ -68,30 +68,6 @@ def get_prev_next_rows(df: pd.DataFrame, center_date, cols: list[str]):
 
     return prev_row, next_row
 
-# 把 “某个事件列+对应时间列” 拼成一个简洁文本
-def build_event_detail(row, value_col: str, time_col: str, include_label=False, label_name=""):
-    if row is None:
-        return ""
-
-    value = row.get(value_col, "")
-    time_text = format_time_hm(row.get(time_col, ""))
-
-    parts = []
-
-    if include_label and label_name:
-        if has_value(value):
-            parts.append(f"{label_name}{value}")
-        else:
-            parts.append(label_name)
-    else:
-        if has_value(value):
-            parts.append(str(value))
-
-    if time_text:
-        parts.append(time_text)
-
-    return " ".join(parts).strip()
-
 # 把“前一条/后一条事件记录”格式化成一行
 def build_prev_next_line(row, center_date, prefix_type: str, value_cols: list[str], time_col: str | None = None):
     if row is None:

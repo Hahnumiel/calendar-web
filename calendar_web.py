@@ -664,10 +664,10 @@ with tab2:
     st.subheader("七天主视图")
     for _, row_a in window_dfr.iterrows():
         day_text = "\n".join([
-            "-" * 72
+            "-" * 72,
             build_window_day_line1(row_a, cen_date),
             build_window_day_line2(row_a),
-            build_window_day_line3(row_a),
+            build_window_day_line3(row_a)
         ])
         st.text(day_text)
 

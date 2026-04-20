@@ -281,7 +281,7 @@ def row_to_lines(row, center_date, df: pd.DataFrame):
     if has_value(row.get("年卦", "")):
         gua_parts_a.append(f"【年】{row['年卦']}")
     if gua_parts_a:
-        lines.append(f"卦象：{' '.join(gua_parts_a)}")
+        lines.append(f"卦象：{'      '.join(gua_parts_a)}")
 
     gua_parts_b = []
     if has_value(row.get("月卦", "")):

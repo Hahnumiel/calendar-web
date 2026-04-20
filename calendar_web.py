@@ -666,8 +666,7 @@ with tab2:
         st.text(build_window_day_line1(row_a, cen_date))
         st.text(build_window_day_line2(row_a))
         st.text(build_window_day_line3(row_a))
-
-    st.divider()
+        st.divider()
 
     st.subheader("节气")
     for line in build_event_section(dfr, cen_date, start_date_a, end_date_a, ["节气", "物候"], "时间点"):

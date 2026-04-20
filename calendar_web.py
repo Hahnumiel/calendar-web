@@ -100,7 +100,7 @@ def row_to_lines(row, center_date, df: pd.DataFrame):
     first_line = f"[{label}] {row['日期']}（星期{week}）"
     if has_value(my_days):
         first_line += f" {my_days}"
-    lines.append("=" * 45)
+    lines.append("=" * 48)
     lines.append(first_line)
 
     # 2. 农历：二月小廿八

@@ -665,10 +665,12 @@ def get_anchor_date_from_cookie(fallback: date) -> date | None:
 # 把当前用户设定日期写入浏览器cookie
 def save_anchor_date_to_cookie(anchor_date_a: date | None):
     if anchor_date_a is None:
-        try:
-            cookie_controller.remove("anchor_date")
-        except KeyError:
-            pass
+        existing_cookie = cookie_controller.get("anchor_date")
+        if existing_cookie:
+            try:
+                cookie_controller.remove("anchor_date")
+            except KeyError:
+                pass
     else:
         cookie_controller.set("anchor_date", anchor_date_a.isoformat())
 

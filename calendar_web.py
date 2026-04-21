@@ -100,8 +100,8 @@ def build_prev_next_line(row, center_date, prefix_type: str, value_cols: list[st
 
 
 # 把某一天的一整行数据，整理成“当天详情页”展示用的多行文本
-def row_to_lines(row, center_date, df: pd.DataFrame, anchor_date_a=None):
-    label = format_day_label(row["日期"], center_date)
+def row_to_lines(row, df: pd.DataFrame, anchor_date_a=None):
+    label = format_day_label(row["日期"], datetime.today().date())
     lines = []
 
     # 1. 第一行：[今天] 2026-04-15（星期三） 17048
@@ -839,8 +839,8 @@ with tab1:
     query_date_input = st.date_input(
         "选择日期",
         value=st.session_state.tab1_date,
-        key="tab1_date_input"
     )
+
     query_date = resolve_date_input(query_date_input, default_date)
     st.session_state.tab1_date = query_date
 
@@ -850,7 +850,7 @@ with tab1:
         st.warning(f"{query_date} 没有记录。")
     else:
         row_data = row_df.iloc[0]
-        text_data = row_to_lines(row_data, query_date, dfr, anchor_date)
+        text_data = row_to_lines(row_data, dfr, anchor_date)
         st.text(text_data)
 
         # 卦象解析（移到 else 里面）

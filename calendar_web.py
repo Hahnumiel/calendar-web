@@ -1,10 +1,9 @@
 import streamlit as st  # Streamlit：用来把 Python 程序做成网页
 import pandas as pd  # pandas：负责读取和处理 Excel 表格
-import time as pytime
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast
-from streamlit_cookies_controller import CookieController
+from streamlit_local_storage import LocalStorage
 
 FILE_PATH = "wz.xlsx"
 
@@ -389,7 +388,7 @@ def build_window_day_line2(row) -> str:
 def build_window_day_line3(row) -> str:
     gua_text = build_gua_text(row)
 
-    return f"{gua_text}"
+    return gua_text
 
 
 # 生成一个布尔筛选条件
@@ -629,9 +628,8 @@ def format_keyword_event_line(row, keyword: str) -> str:
 
     return f"{date_text} " + " ".join(parts)
 
-
-@st.cache_data
 # 用 Streamlit 缓存读表结果，减少重复读取 Excel 的开销
+@st.cache_data
 def get_data():
     return load_data(FILE_PATH)
 
@@ -647,17 +645,13 @@ def get_default_date(df):
 
 # 从浏览器cookie中读取用户之前保存
 def get_anchor_date_from_cookie(fallback: date) -> date | None:
-    # 先让组件把浏览器里的 cookie 同步进来
-    cookie_controller.getAll()
-    pytime.sleep(1)
+    value = local_storage.getItem("anchor_date")
 
-    cookie_value = cookie_controller.get("anchor_date")
-
-    if not cookie_value:
+    if not value:
         return None
 
     try:
-        ts = pd.Timestamp(cookie_value)
+        ts = pd.Timestamp(value)
     except (ValueError, TypeError):
         return fallback
 
@@ -670,18 +664,9 @@ def get_anchor_date_from_cookie(fallback: date) -> date | None:
 # 把当前用户设定日期写入浏览器cookie
 def save_anchor_date_to_cookie(anchor_date_a: date | None):
     if anchor_date_a is None:
-        existing_cookie = cookie_controller.get("anchor_date")
-        if existing_cookie:
-            try:
-                cookie_controller.remove("anchor_date")
-            except KeyError:
-                pass
+        local_storage.deleteItem("anchor_date")
     else:
-        cookie_controller.set(
-            "anchor_date",
-            anchor_date_a.isoformat(),
-            max_age=60 * 60 * 24 * 365
-        )
+        local_storage.setItem("anchor_date", anchor_date_a.isoformat())
 
 
 # 把各种可能的值，统一整理成真正的 date
@@ -716,6 +701,13 @@ def normalize_date_value(value, fallback: date) -> date:
 
 
 # 天数转化
+def resolve_date_input(value, fallback):
+    if isinstance(value, tuple):
+        return value[0] if value else fallback
+    return value if value is not None else fallback
+
+
+# 天数转化
 def calc_user_day_number(row_date, anchor_date_a):
     if anchor_date_a is None:
         return ""
@@ -725,7 +717,7 @@ def calc_user_day_number(row_date, anchor_date_a):
 
 
 # 这里放 CookieController 实例
-cookie_controller = CookieController()
+local_storage = LocalStorage()
 
 
 # Streamlit 页面设置
@@ -768,12 +760,7 @@ with st.sidebar:
             key="anchor_date"
         )
 
-        if isinstance(anchor_date_input, tuple):
-            anchor_date = anchor_date_input[0] if len(anchor_date_input) > 0 else default_date
-        elif anchor_date_input is None:
-            anchor_date = default_date
-        else:
-            anchor_date = anchor_date_input
+        anchor_date = resolve_date_input(anchor_date_input, default_date)
 
         # 写入 cookie
         save_anchor_date_to_cookie(anchor_date)
@@ -792,12 +779,7 @@ tab1, tab2, tab3 = st.tabs(["一天详情", "七天播报（±3）", "单项查�
 with tab1:
     query_date_input = st.date_input("选择日期", value=default_date)
 
-    if isinstance(query_date_input, tuple):
-        query_date = query_date_input[0] if len(query_date_input) > 0 else default_date
-    elif query_date_input is None:
-        query_date = default_date
-    else:
-        query_date = query_date_input
+    query_date = resolve_date_input(query_date_input, default_date)
     row_df = dfr[dfr["日期"] == query_date]
 
     if row_df.empty:
@@ -810,13 +792,7 @@ with tab1:
 # 页面二：七天播报（±3）
 with tab2:
     center_date_input = st.date_input("选择中心日期", value=default_date, key="center_date")
-
-    if isinstance(center_date_input, tuple):
-        cen_date = center_date_input[0] if len(center_date_input) > 0 else default_date
-    elif center_date_input is None:
-        cen_date = default_date
-    else:
-        cen_date = center_date_input
+    cen_date = resolve_date_input(center_date_input, default_date)
 
     start_date_a = cen_date - timedelta(days=3)
     end_date_a = cen_date + timedelta(days=3)
@@ -867,13 +843,7 @@ with tab3:
 
     keyword_data = st.selectbox("选择关键词", supported_keywords)
     start_date_kw_input = st.date_input("起始日期", value=default_date, key="kw_date")
-
-    if isinstance(start_date_kw_input, tuple):
-        start_date_kw = start_date_kw_input[0] if len(start_date_kw_input) > 0 else default_date
-    elif start_date_kw_input is None:
-        start_date_kw = default_date
-    else:
-        start_date_kw = start_date_kw_input
+    start_date_kw = resolve_date_input(start_date_kw_input, default_date)
 
     if keyword_data == "节气":
         mask_a = (

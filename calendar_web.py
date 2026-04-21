@@ -838,7 +838,7 @@ with tab1:
             st.session_state.tab1_date += timedelta(days=1)
             st.rerun()
 
-    col_label, col_input = st.columns([1, 3])
+    col_label, col_input = st.columns([1, 4])
     with col_label:
         st.write("选择日期")
     with col_input:

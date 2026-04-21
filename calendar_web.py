@@ -542,7 +542,7 @@ def build_retrograde_section(df: pd.DataFrame, center_date):
             start, end = current_interval
             display_end = end + timedelta(days=1)
             lines.append(
-                f"{display_name}（逆行中），本次逆行开始于{start}，结束于{display_end}"
+                f"{display_name}（逆行中），本次逆行始于{start}，结束于{display_end}"
             )
         else:
             next_interval = None
@@ -554,7 +554,7 @@ def build_retrograde_section(df: pd.DataFrame, center_date):
             if next_interval is not None:
                 start, _ = next_interval
                 lines.append(
-                    f"{display_name}（无逆行），下次逆行开始于{start}"
+                    f"{display_name}（无逆行），下次逆行始于{start}"
                 )
             else:
                 lines.append(

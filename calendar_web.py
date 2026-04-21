@@ -789,18 +789,26 @@ with tab1:
     query_date = resolve_date_input(query_date_input, default_date)
     st.session_state.tab1_date = query_date
 
-    # 三个快捷按钮
+    # 三个快捷按钮（强制横排）
+    st.markdown("""
+            <style>
+            div[data-testid="stHorizontalBlock"] > div {
+                min-width: 0 !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
     col_prev, col_today, col_next = st.columns(3)
     with col_prev:
-        if st.button("← 上一天", use_container_width=True):
+        if st.button("←上一天", use_container_width=True):
             st.session_state.tab1_date = query_date - timedelta(days=1)
             st.rerun()
     with col_today:
-        if st.button("⊙ 今天", use_container_width=True):
+        if st.button("⊙今天", use_container_width=True):
             st.session_state.tab1_date = datetime.today().date()
             st.rerun()
     with col_next:
-        if st.button("下一天 →", use_container_width=True):
+        if st.button("下一天→", use_container_width=True):
             st.session_state.tab1_date = query_date + timedelta(days=1)
             st.rerun()
     

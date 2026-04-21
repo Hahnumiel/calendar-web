@@ -331,13 +331,13 @@ def build_huangli_text(row) -> str:
 def build_gua_text(row) -> str:
     parts = []
     if has_value(row.get("年卦", "")):
-        parts.append(f"[年]{row['年卦']}")
+        parts.append(f"年: {row['年卦']}")
     if has_value(row.get("月卦", "")):
-        parts.append(f"[月]{row['月卦']}")
+        parts.append(f"月: {row['月卦']}")
     if has_value(row.get("旬卦", "")):
-        parts.append(f"[旬]{row['旬卦']}")
+        parts.append(f"旬: {row['旬卦']}")
     if has_value(row.get("日卦", "")):
-        parts.append(f"[日]{row['日卦']}")
+        parts.append(f"日: {row['日卦']}")
     return " ".join(parts)
 
 

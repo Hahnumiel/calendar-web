@@ -2,6 +2,7 @@ import streamlit as st  # Streamlit：用来把 Python 程序做成网页
 import pandas as pd  # pandas：负责读取和处理 Excel 表格
 import re
 import mammoth
+import base64
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast

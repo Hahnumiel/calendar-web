@@ -735,7 +735,7 @@ local_storage = LocalStorage()
 
 # Streamlit 页面设置
 st.set_page_config(page_title="我的日历本", layout="wide")
-st.title("我的日历本")
+st.header("我的日历本")
 
 # 加粗 tab 标签
 st.markdown("""

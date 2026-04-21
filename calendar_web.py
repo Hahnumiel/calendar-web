@@ -1,7 +1,7 @@
 import streamlit as st  # Streamlit：用来把 Python 程序做成网页
 import pandas as pd  # pandas：负责读取和处理 Excel 表格
-import json
 import re
+import mammoth
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast
@@ -638,8 +638,31 @@ def get_data():
 
 @st.cache_data
 def get_hexagrams():
-    with open("hexagrams.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+    with open("yiv08.docx", "rb") as f:
+        result = mammoth.convert_to_html(f)
+    html = result.value
+
+    pattern = r'id="_([^"]+[䷀-䷿][^"]*)"'
+    anchors = list(re.finditer(pattern, html))
+
+    gua_anchors = []
+    seen = set()
+    for m in anchors:
+        name = m.group(1)
+        base = re.sub(r'_\d+$', '', name)
+        if base not in seen and re.search(r'[䷀-䷿]', base):
+            seen.add(base)
+            gua_anchors.append((base, m.start()))
+
+    hexagram_html = {}
+    for i, (name, pos) in enumerate(gua_anchors):
+        end = gua_anchors[i + 1][1] if i + 1 < len(gua_anchors) else len(html)
+        tag_start = html.rfind('<', 0, pos)
+        chunk = html[tag_start:end]
+        gua_name = re.sub(r'[䷀-䷿].*', '', name).strip()
+        hexagram_html[gua_name] = chunk
+
+    return hexagram_html
 
 
 # 决定网页默认打开时显示哪一天
@@ -841,7 +864,7 @@ with tab1:
             gua_name = re.sub(r'^\d+\.', '', gua_val).strip()
             if gua_name in hexagram_data:
                 with st.expander(f"【{gua_labels[column]}卦】{gua_name} — 点击展开解析"):
-                    st.text(hexagram_data[gua_name]["内容"])
+                    st.html(hexagram_data[gua_name]["内容"])
 
 # 页面二：七天播报（±3）
 with tab2:

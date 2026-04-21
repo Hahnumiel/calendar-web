@@ -805,7 +805,7 @@ with st.sidebar:
     st.session_state.last_use_anchor_date = use_anchor_date
 
 
-tab1, tab2, tab3, tab4 = st.tabs(["一天详情", "七天播报（±3）", "单项查询", "卦象解析"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["一天详情", "七天播报（±3）", "单项查询", "卦象解析", "象图集"])
 
 # 页面一：当天详情
 with tab1:
@@ -977,4 +977,29 @@ with tab4:
                 <style>img {{ max-width: 100%; height: auto; }}</style>
                 {hexagram_data[selected_gua]}
             """)
+
+
+# 页面五：象图
+with tab5:
+    st.subheader("象图集")
+
+    image_map = {
+        "总象图": "00.png",
+        "先天象": "01.png",
+        "后天象": "02.png",
+        "互象图": "03.png",
+        "原象图": "04.png",
+        "变象图": "05.png",
+        "八卦九曜星宿图": "06.png",
+        "三十六卦序图": "07.png",
+        "150年干支卦象": "08.png",
+        "飞遁总图": "09.png",
+        "2026年卦象飞遁图": "20260.png",
+        "2026年九宫飞星图": "20261.png",
+        "2026年先天后天和合图": "20262.png",
+        "2026年九宫飞星合卦图": "20263.png",
+    }
+
+    selected_image = st.selectbox("选择图", list(image_map.keys()))
+    st.image(image_map[selected_image], use_container_width=True)
 

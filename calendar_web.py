@@ -639,8 +639,8 @@ def get_data():
 @st.cache_data
 def get_hexagrams():
     with open("yiv08.docx", "rb") as f:
-        result = mammoth.convert_to_html(f)
-    html = result.value
+        result_html = mammoth.convert_to_html(f)
+    html = result_html.value
 
     pattern = r'id="_([^"]+[䷀-䷿][^"]*)"'
     anchors = list(re.finditer(pattern, html))
@@ -659,10 +659,30 @@ def get_hexagrams():
         end = gua_anchors[i + 1][1] if i + 1 < len(gua_anchors) else len(html)
         tag_start = html.rfind('<', 0, pos)
         chunk = html[tag_start:end]
-        gua_name = re.sub(r'[䷀-䷿].*', '', name).strip()
-        hexagram_html[gua_name] = chunk
+        gua_name_a = re.sub(r'[䷀-䷿].*', '', name).strip()
+        hexagram_html[gua_name_a] = chunk
 
     return hexagram_html
+
+
+@st.cache_data
+def get_full_html():
+    with open("yiv08.docx", "rb") as f:
+        result_html = mammoth.convert_to_html(f)
+    html = result_html.value
+
+    idx_toc_end = html.find("<p><strong>序卦</strong></p>")
+    toc_html = html[:idx_toc_end]
+
+    idx_gua_start = html.rfind('<', 0, html.find('id="_乾为天䷀"'))
+    gua_html = html[idx_gua_start:]
+
+    return f"""
+        <style>img {{ max-width: 100%; height: auto; }}</style>
+        {toc_html}
+        <hr>
+        {gua_html}
+    """
 
 
 # 决定网页默认打开时显示哪一天
@@ -805,7 +825,7 @@ with st.sidebar:
     st.session_state.last_use_anchor_date = use_anchor_date
 
 
-tab1, tab2, tab3 = st.tabs(["一天详情", "七天播报（±3）", "单项查询"])
+tab1, tab2, tab3, tab4 = st.tabs(["一天详情", "七天播报（±3）", "单项查询", "卦象"])
 
 # 页面一：当天详情
 with tab1:
@@ -870,6 +890,7 @@ with tab1:
                         </style>
                         {hexagram_data[gua_name]}
                     """)
+
 # 页面二：七天播报（±3）
 with tab2:
     center_date_input = st.date_input("选择中心日期", value=default_date, key="center_date")
@@ -962,3 +983,10 @@ with tab3:
     else:
         for _, row_b in result.iterrows():
             st.text(format_keyword_event_line(row_b, keyword_data))
+
+
+# 页面四：卦象
+with tab4:
+    st.subheader("卦象")
+    st.html(get_full_html())
+

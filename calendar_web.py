@@ -2,6 +2,7 @@ import streamlit as st  # Streamlit：用来把 Python 程序做成网页
 import pandas as pd  # pandas：负责读取和处理 Excel 表格
 import re
 import mammoth
+import streamlit.components.v1 as components
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast
@@ -825,7 +826,7 @@ with st.sidebar:
     st.session_state.last_use_anchor_date = use_anchor_date
 
 
-tab1, tab2, tab3, tab4 = st.tabs(["一天详情", "七天播报（±3）", "单项查询", "卦象"])
+tab1, tab2, tab3, tab4 = st.tabs(["一天详情", "七天播报（±3）", "单项查询", "卦象解析"])
 
 # 页面一：当天详情
 with tab1:
@@ -987,6 +988,6 @@ with tab3:
 
 # 页面四：卦象
 with tab4:
-    st.subheader("卦象")
-    st.html(get_full_html())
+    st.subheader("卦象解析")
+    components.html(get_full_html(), height=800, scrolling=True)
 

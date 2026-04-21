@@ -112,7 +112,6 @@ def row_to_lines(row, df: pd.DataFrame, anchor_date_a=None):
     user_day_no = calc_user_day_number(row["日期"], anchor_date_a)
     if user_day_no != "":
         first_line += f" {user_day_no}"
-    lines.append("=" * 48)
     lines.append(first_line)
 
     # 2. 农历：二月小廿八

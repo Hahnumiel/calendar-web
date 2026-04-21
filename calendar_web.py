@@ -741,8 +741,9 @@ st.title("我的日历本")
 # 加粗 tab 标签
 st.markdown("""
     <style>
-    button[data-baseweb="tab"] {
+    .stTabs [data-baseweb="tab"] p {
         font-weight: bold;
+        font-size: 1.1em;
     }
     </style>
 """, unsafe_allow_html=True)

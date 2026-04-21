@@ -813,14 +813,6 @@ with tab1:
     if "tab1_date" not in st.session_state:
         st.session_state.tab1_date = default_date
 
-    query_date_input = st.date_input(
-        "选择日期",
-        value=st.session_state.tab1_date,
-        key="tab1_date_input"
-    )
-    query_date = resolve_date_input(query_date_input, default_date)
-    st.session_state.tab1_date = query_date
-
     # 三个快捷按钮（强制横排）
     st.markdown("""
             <style>
@@ -833,7 +825,7 @@ with tab1:
     col_prev, col_today, col_next = st.columns(3)
     with col_prev:
         if st.button("←上一天", use_container_width=True):
-            st.session_state.tab1_date = query_date - timedelta(days=1)
+            st.session_state.tab1_date -= timedelta(days=1)
             st.rerun()
     with col_today:
         if st.button("⊙今天", use_container_width=True):
@@ -841,8 +833,16 @@ with tab1:
             st.rerun()
     with col_next:
         if st.button("下一天→", use_container_width=True):
-            st.session_state.tab1_date = query_date + timedelta(days=1)
+            st.session_state.tab1_date += timedelta(days=1)
             st.rerun()
+
+    query_date_input = st.date_input(
+        "选择日期",
+        value=st.session_state.tab1_date,
+        key="tab1_date_input"
+    )
+    query_date = resolve_date_input(query_date_input, default_date)
+    st.session_state.tab1_date = query_date
 
     row_df = dfr[dfr["日期"] == query_date]
 

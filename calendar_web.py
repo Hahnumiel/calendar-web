@@ -838,10 +838,15 @@ with tab1:
             st.session_state.tab1_date += timedelta(days=1)
             st.rerun()
 
-    query_date_input = st.date_input(
-        "选择日期",
-        value=st.session_state.tab1_date,
-    )
+    col_label, col_input = st.columns([1, 3])
+    with col_label:
+        st.write("选择日期")
+    with col_input:
+        query_date_input = st.date_input(
+            "选择日期",
+            value=st.session_state.tab1_date,
+            label_visibility="collapsed"
+        )
 
     query_date = resolve_date_input(query_date_input, default_date)
     st.session_state.tab1_date = query_date

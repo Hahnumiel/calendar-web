@@ -527,7 +527,8 @@ def build_retrograde_section(df: pd.DataFrame, center_date):
         ("冥王逆行", "冥王星"),
     ]
 
-    lines = []
+    active = []    # 逆行中
+    inactive = []  # 无逆行
 
     for field, display_name in retrograde_map:
         intervals = build_retrograde_intervals(df, field)
@@ -541,9 +542,10 @@ def build_retrograde_section(df: pd.DataFrame, center_date):
         if current_interval is not None:
             start, end = current_interval
             display_end = end + timedelta(days=1)
-            lines.append(
-                f"{display_name}（逆行中），本次逆行始于{start}，结束于{display_end}"
-            )
+            active.append((
+                end,  # 用结束日期排序
+                f"{display_name}（逆行中），本次逆行开始于{start}，结束于{display_end}"
+            ))
         else:
             next_interval = None
             for start, end in intervals:
@@ -553,15 +555,22 @@ def build_retrograde_section(df: pd.DataFrame, center_date):
 
             if next_interval is not None:
                 start, _ = next_interval
-                lines.append(
-                    f"{display_name}（无逆行），下次逆行始于{start}"
-                )
+                inactive.append((
+                    start,  # 用下次开始日期排序
+                    f"{display_name}（无逆行），下次逆行开始于{start}"
+                ))
             else:
-                lines.append(
+                inactive.append((
+                    date(9999, 12, 31),  # 没有下次逆行的排最后
                     f"{display_name}（无逆行），后续数据中未找到下一次逆行"
-                )
+                ))
 
-    return lines
+    # 逆行中：结束越晚越靠前（降序）
+    active.sort(key=lambda x: x[0], reverse=True)
+    # 无逆行：开始越早越靠前（升序）
+    inactive.sort(key=lambda x: x[0])
+
+    return [text for _, text in active + inactive]
 
 
 # 把“单项查询”结果格式化成一行文本

@@ -1019,7 +1019,7 @@ with tab5:
             }}
             img.zoomed {{
                 cursor: zoom-out;
-                transform: scale(2.5);
+                transform: scale(3.5);
             }}
             </style>
             <img src="data:image/png;base64,{img_data}"

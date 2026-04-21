@@ -880,7 +880,16 @@ with tab1:
 
 # 页面二：七天播报
 with tab2:
-    center_date_input = st.date_input("选择中心日期", value=default_date, key="center_date")
+    col_label, col_input = st.columns([1, 3])
+    with col_label:
+        st.write("选择中心日期")
+    with col_input:
+        center_date_input = st.date_input(
+            "选择中心日期",
+            value=default_date,
+            key="center_date",
+            label_visibility="collapsed"
+        )
     cen_date = resolve_date_input(center_date_input, default_date)
 
     start_date_a = cen_date - timedelta(days=3)
@@ -930,8 +939,26 @@ with tab3:
         "天王星", "海王星", "冥王星"
     ]
 
-    keyword_data = st.selectbox("选择关键词", supported_keywords)
-    start_date_kw_input = st.date_input("起始日期", value=default_date, key="kw_date")
+    col_label, col_input = st.columns([1, 3])
+    with col_label:
+        st.write("选择项目")
+    with col_input:
+        keyword_data = st.selectbox(
+            "选择项目",
+            supported_keywords,
+            label_visibility="collapsed"
+        )
+
+    col_label, col_input = st.columns([1, 3])
+    with col_label:
+        st.write("起始日期")
+    with col_input:
+        start_date_kw_input = st.date_input(
+            "起始日期",
+            value=default_date,
+            key="kw_date",
+            label_visibility="collapsed"
+        )
     start_date_kw = resolve_date_input(start_date_kw_input, default_date)
 
     if keyword_data == "节气":
@@ -977,7 +1004,15 @@ with tab4:
     st.subheader("卦象解析")
 
     gua_list = list(hexagram_data.keys())
-    selected_gua = st.selectbox("选择卦名", gua_list)
+    col_label, col_input = st.columns([1, 3])
+    with col_label:
+        st.write("选择卦名")
+    with col_input:
+        selected_gua = st.selectbox(
+            "选择卦名",
+            gua_list,
+            label_visibility="collapsed"
+        )
 
     if selected_gua:
         st.html(f"""
@@ -1007,7 +1042,15 @@ with tab5:
         "变象图": "05.png",
     }
 
-    selected_image = st.selectbox("选择图", list(image_map.keys()))
+    col_label, col_input = st.columns([1, 3])
+    with col_label:
+        st.write("选择图")
+    with col_input:
+        selected_image = st.selectbox(
+            "选择图",
+            list(image_map.keys()),
+            label_visibility="collapsed"
+        )
 
     image_path = image_map[selected_image]
     with open(image_path, "rb") as f:

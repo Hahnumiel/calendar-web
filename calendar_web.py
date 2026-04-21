@@ -831,8 +831,8 @@ with tab1:
         st.text(text_data)
 
         # 卦象解析（移到 else 里面）
-        gua_cols = ["月卦", "日卦"]
-        gua_labels = {"月卦": "月", "日卦": "日"}
+        gua_cols = ["十年卦", "年卦", "月卦", "旬卦", "日卦"]
+        gua_labels = {"十年卦": "十年", "年卦": "年", "月卦": "月", "旬卦": "旬", "日卦": "日"}
 
         for column in gua_cols:
             gua_val = str(row_data.get(column, "")).strip()

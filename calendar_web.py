@@ -807,7 +807,7 @@ with st.sidebar:
     st.session_state.last_use_anchor_date = use_anchor_date
 
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["一天详情", "七天播报（±3）", "单项查询", "卦象解析", "象图集"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["一天详情 ", "七天播报 ", "单项查询 ", "卦象解析 ", "象图集 "])
 
 # 页面一：当天详情
 with tab1:
@@ -873,7 +873,7 @@ with tab1:
                         {hexagram_data[gua_name]}
                     """)
 
-# 页面二：七天播报（±3）
+# 页面二：七天播报
 with tab2:
     center_date_input = st.date_input("选择中心日期", value=default_date, key="center_date")
     cen_date = resolve_date_input(center_date_input, default_date)
@@ -1019,7 +1019,7 @@ with tab5:
             }}
             img.zoomed {{
                 cursor: zoom-out;
-                transform: scale(3.5);
+                transform: scale(3);
             }}
             </style>
             <img src="data:image/png;base64,{img_data}"

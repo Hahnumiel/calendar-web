@@ -262,25 +262,6 @@ def row_to_lines(row, df: pd.DataFrame, anchor_date_a=None):
     else:
         lines.append("行星逆行：（无）")
 
-    # 10. 卦象
-    gua_parts_a = []
-    if has_value(row.get("十年卦", "")):
-        gua_parts_a.append(f"【十年】{row['十年卦']}")
-    if has_value(row.get("年卦", "")):
-        gua_parts_a.append(f"【年】{row['年卦']}")
-    if gua_parts_a:
-        lines.append(f"卦象：{'      '.join(gua_parts_a)}")
-
-    gua_parts_b = []
-    if has_value(row.get("月卦", "")):
-        gua_parts_b.append(f"【月】{row['月卦']}")
-    if has_value(row.get("旬卦", "")):
-        gua_parts_b.append(f"【旬】{row['旬卦']}")
-    if has_value(row.get("日卦", "")):
-        gua_parts_b.append(f"【日】{row['日卦']}")
-    if gua_parts_b:
-        lines.append(f"        {' '.join(gua_parts_b)}")
-
     return "\n".join(lines)
 
 
@@ -859,8 +840,6 @@ with tab1:
         row_data = row_df.iloc[0]
         text_data = row_to_lines(row_data, dfr, anchor_date)
         st.text(text_data)
-
-        # 卦象解析（移到 else 里面）
         gua_cols = ["十年卦", "年卦", "月卦", "旬卦", "日卦"]
         gua_labels = {"十年卦": "十年", "年卦": "年", "月卦": "月", "旬卦": "旬", "日卦": "日"}
 

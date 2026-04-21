@@ -832,7 +832,7 @@ with tab1:
             st.session_state.tab1_date = datetime.today().date()
             st.rerun()
     with col_next:
-        if st.button("下一天→", use_container_width=True):
+        if st.button("→下一天", use_container_width=True):
             st.session_state.tab1_date += timedelta(days=1)
             st.rerun()
 

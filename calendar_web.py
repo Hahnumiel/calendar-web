@@ -738,6 +738,15 @@ local_storage = LocalStorage()
 st.set_page_config(page_title="我的日历本", layout="wide")
 st.title("我的日历本")
 
+# 加粗 tab 标签
+st.markdown("""
+    <style>
+    button[data-baseweb="tab"] {
+        font-weight: bold;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 dfr = get_data()
 hexagram_data = get_hexagrams()
 default_date = get_default_date(dfr)

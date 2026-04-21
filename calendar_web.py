@@ -2,7 +2,6 @@ import streamlit as st  # Streamlit：用来把 Python 程序做成网页
 import pandas as pd  # pandas：负责读取和处理 Excel 表格
 import re
 import mammoth
-import streamlit.components.v1 as components
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast
@@ -666,26 +665,6 @@ def get_hexagrams():
     return hexagram_html
 
 
-@st.cache_data
-def get_full_html():
-    with open("yiv08.docx", "rb") as f:
-        result_html = mammoth.convert_to_html(f)
-    html = result_html.value
-
-    idx_toc_end = html.find("<p><strong>序卦</strong></p>")
-    toc_html = html[:idx_toc_end]
-
-    idx_gua_start = html.rfind('<', 0, html.find('id="_乾为天䷀"'))
-    gua_html = html[idx_gua_start:]
-
-    return f"""
-        <style>img {{ max-width: 100%; height: auto; }}</style>
-        {toc_html}
-        <hr>
-        {gua_html}
-    """
-
-
 # 决定网页默认打开时显示哪一天
 def get_default_date(df):
     min_date = df["日期"].min()
@@ -989,5 +968,13 @@ with tab3:
 # 页面四：卦象
 with tab4:
     st.subheader("卦象解析")
-    components.html(get_full_html(), height=800, scrolling=True)
+
+    gua_list = list(hexagram_data.keys())
+    selected_gua = st.selectbox("选择卦名", gua_list)
+
+    if selected_gua:
+        st.html(f"""
+                <style>img {{ max-width: 100%; height: auto; }}</style>
+                {hexagram_data[selected_gua]}
+            """)
 

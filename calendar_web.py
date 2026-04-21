@@ -882,10 +882,10 @@ with tab1:
 with tab2:
     col_label, col_input = st.columns([1, 3])
     with col_label:
-        st.write("选择中心日期")
+        st.write("选择日期")
     with col_input:
         center_date_input = st.date_input(
-            "选择中心日期",
+            "选择日期",
             value=default_date,
             key="center_date",
             label_visibility="collapsed"
@@ -1001,8 +1001,6 @@ with tab3:
 
 # 页面四：卦象
 with tab4:
-    st.subheader("卦象解析")
-
     gua_list = list(hexagram_data.keys())
     col_label, col_input = st.columns([1, 3])
     with col_label:
@@ -1023,8 +1021,6 @@ with tab4:
 
 # 页面五：象图
 with tab5:
-    st.subheader("象图集")
-
     image_map = {
         "2026年卦象飞遁图": "20260.png",
         "2026年九宫飞星图": "20261.png",

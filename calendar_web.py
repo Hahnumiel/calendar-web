@@ -880,7 +880,7 @@ with tab1:
 
 # 页面二：七天播报
 with tab2:
-    col_label, col_input = st.columns([1, 3])
+    col_label, col_input = st.columns([1, 4])
     with col_label:
         st.write("选择日期")
     with col_input:
@@ -939,7 +939,7 @@ with tab3:
         "天王星", "海王星", "冥王星"
     ]
 
-    col_label, col_input = st.columns([1, 3])
+    col_label, col_input = st.columns([1, 4])
     with col_label:
         st.write("选择项目")
     with col_input:
@@ -949,7 +949,7 @@ with tab3:
             label_visibility="collapsed"
         )
 
-    col_label, col_input = st.columns([1, 3])
+    col_label, col_input = st.columns([1, 4])
     with col_label:
         st.write("起始日期")
     with col_input:
@@ -1002,7 +1002,7 @@ with tab3:
 # 页面四：卦象
 with tab4:
     gua_list = list(hexagram_data.keys())
-    col_label, col_input = st.columns([1, 3])
+    col_label, col_input = st.columns([1, 4])
     with col_label:
         st.write("选择卦名")
     with col_input:
@@ -1038,12 +1038,12 @@ with tab5:
         "变象图": "05.png",
     }
 
-    col_label, col_input = st.columns([1, 3])
+    col_label, col_input = st.columns([1, 4])
     with col_label:
-        st.write("选择图")
+        st.write("选择图象")
     with col_input:
         selected_image = st.selectbox(
-            "选择图",
+            "选择图象",
             list(image_map.keys()),
             label_visibility="collapsed"
         )

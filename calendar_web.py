@@ -864,7 +864,7 @@ with tab1:
             gua_name = re.sub(r'^\d+\.', '', gua_val).strip()
             if gua_name in hexagram_data:
                 with st.expander(f"【{gua_labels[column]}卦】{gua_name} — 点击展开解析"):
-                    st.html(hexagram_data[gua_name]["内容"])
+                    st.html(hexagram_data[gua_name])
 
 # 页面二：七天播报（±3）
 with tab2:

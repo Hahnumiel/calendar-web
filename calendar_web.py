@@ -1,5 +1,6 @@
-import streamlit as st  # Streamlit：用来把 Python 程序做成网页
 import pandas as pd  # pandas：负责读取和处理 Excel 表格
+import json
+import re
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast
@@ -634,6 +635,12 @@ def get_data():
     return load_data(FILE_PATH)
 
 
+@st.cache_data
+def get_hexagrams():
+    with open("hexagrams.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 # 决定网页默认打开时显示哪一天
 def get_default_date(df):
     min_date = df["日期"].min()
@@ -716,7 +723,7 @@ def calc_user_day_number(row_date, anchor_date_a):
     return delta + 1 if delta >= 0 else delta
 
 
-# 这里放 CookieController 实例
+# 实例化（约在所有函数定义之后，页面逻辑之前）
 local_storage = LocalStorage()
 
 
@@ -725,6 +732,7 @@ st.set_page_config(page_title="我的日历本", layout="wide")
 st.title("我的日历本")
 
 dfr = get_data()
+hexagram_data = get_hexagrams()
 default_date = get_default_date(dfr)
 
 # 用户自定义起始日（会话 + Cookie）
@@ -811,7 +819,7 @@ with tab1:
         if st.button("下一天→", use_container_width=True):
             st.session_state.tab1_date = query_date + timedelta(days=1)
             st.rerun()
-    
+
     row_df = dfr[dfr["日期"] == query_date]
 
     if row_df.empty:
@@ -820,6 +828,19 @@ with tab1:
         row_data = row_df.iloc[0]
         text_data = row_to_lines(row_data, query_date, dfr, anchor_date)
         st.text(text_data)
+
+        # 卦象解析（移到 else 里面）
+        gua_cols = ["月卦", "日卦"]
+        gua_labels = {"月卦": "月", "日卦": "日"}
+
+        for column in gua_cols:
+            gua_val = str(row_data.get(column, "")).strip()
+            if not has_value(gua_val):
+                continue
+            gua_name = re.sub(r'^\d+\.', '', gua_val).strip()
+            if gua_name in hexagram_data:
+                with st.expander(f"【{gua_labels[column]}卦】{gua_name} — 点击展开解析"):
+                    st.text(hexagram_data[gua_name]["内容"])
 
 # 页面二：七天播报（±3）
 with tab2:

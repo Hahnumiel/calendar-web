@@ -638,8 +638,8 @@ def get_data():
 
 @st.cache_data
 def get_hexagrams():
-    with open("yiv08.docx", "rb") as f:
-        result_html = mammoth.convert_to_html(f)
+    with open("yiv08.docx", "rb") as ff:
+        result_html = mammoth.convert_to_html(ff)
     html = result_html.value
 
     pattern = r'id="_([^"]+[䷀-䷿][^"]*)"'

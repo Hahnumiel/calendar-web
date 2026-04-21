@@ -3,6 +3,7 @@ import pandas as pd  # pandas：负责读取和处理 Excel 表格
 import re
 import mammoth
 import base64
+import streamlit.components.v1 as components
 from datetime import datetime, timedelta, time, date
 from pandas import Series
 from typing import cast
@@ -1002,27 +1003,26 @@ with tab5:
     }
 
     selected_image = st.selectbox("选择图", list(image_map.keys()))
-    
+
     image_path = image_map[selected_image]
     with open(image_path, "rb") as f:
-        import base64
         img_data = base64.b64encode(f.read()).decode()
-    
-    st.html(f"""
-        <style>
-        .zoom-img {{
-            width: 100%;
-            cursor: zoom-in;
-            transition: transform 0.3s ease;
-        }}
-        .zoom-img.zoomed {{
-            cursor: zoom-out;
-            transform: scale(2);
-            transform-origin: top left;
-        }}
-        </style>
-        <img class="zoom-img" 
-             src="data:image/png;base64,{img_data}"
-             onclick="this.classList.toggle('zoomed')">
-    """)
+
+    components.html(f"""
+            <style>
+            body {{ margin: 0; padding: 0; }}
+            img {{
+                width: 100%;
+                cursor: zoom-in;
+                transition: transform 0.3s ease;
+                transform-origin: top left;
+            }}
+            img.zoomed {{
+                cursor: zoom-out;
+                transform: scale(2.5);
+            }}
+            </style>
+            <img src="data:image/png;base64,{img_data}"
+                 onclick="this.classList.toggle('zoomed')">
+        """, height=600, scrolling=True)
 

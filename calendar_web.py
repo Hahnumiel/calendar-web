@@ -543,8 +543,8 @@ def build_retrograde_section(df: pd.DataFrame, center_date):
             start, end = current_interval
             display_end = end + timedelta(days=1)
             active.append((
-                end,  # 用结束日期排序
-                f"{display_name}（逆行中），本次逆行开始于{start}，结束于{display_end}"
+                end,
+                f"{display_name}，本次逆行始于{start}，结束于{display_end}"
             ))
         else:
             next_interval = None
@@ -556,21 +556,31 @@ def build_retrograde_section(df: pd.DataFrame, center_date):
             if next_interval is not None:
                 start, _ = next_interval
                 inactive.append((
-                    start,  # 用下次开始日期排序
-                    f"{display_name}（无逆行），下次逆行开始于{start}"
+                    start,
+                    f"{display_name}，下次逆行始于{start}"
                 ))
             else:
                 inactive.append((
-                    date(9999, 12, 31),  # 没有下次逆行的排最后
-                    f"{display_name}（无逆行），后续数据中未找到下一次逆行"
+                    date(9999, 12, 31),
+                    f"{display_name}，后续数据中未找到下一次逆行"
                 ))
 
-    # 逆行中：结束越晚越靠前（降序）
     active.sort(key=lambda x: x[0], reverse=True)
-    # 无逆行：开始越早越靠前（升序）
     inactive.sort(key=lambda x: x[0])
 
-    return [text for _, text in active + inactive]
+    lines = []
+
+    if active:
+        lines.append("逆行中行星：")
+        for _, text in active:
+            lines.append(f"  {text}")
+
+    if inactive:
+        lines.append("顺行中行星：")
+        for _, text in inactive:
+            lines.append(f"  {text}")
+
+    return lines
 
 
 # 把“单项查询”结果格式化成一行文本

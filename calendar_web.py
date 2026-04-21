@@ -1001,5 +1001,27 @@ with tab5:
     }
 
     selected_image = st.selectbox("选择图", list(image_map.keys()))
-    st.image(image_map[selected_image], use_container_width=True)
+    
+    image_path = image_map[selected_image]
+    with open(image_path, "rb") as f:
+        import base64
+        img_data = base64.b64encode(f.read()).decode()
+    
+    st.html(f"""
+        <style>
+        .zoom-img {{
+            width: 100%;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }}
+        .zoom-img.zoomed {{
+            cursor: zoom-out;
+            transform: scale(2);
+            transform-origin: top left;
+        }}
+        </style>
+        <img class="zoom-img" 
+             src="data:image/png;base64,{img_data}"
+             onclick="this.classList.toggle('zoomed')">
+    """)
 

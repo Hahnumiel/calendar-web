@@ -887,12 +887,12 @@ with tab1:
 
 # 页面二：七天播报
 with tab2:
-    col_label, col_input = st.columns([1, 4])
+    col_label, col_input = st.columns([1, 2.5])
     with col_label:
-        st.write("选择日期")
+        st.write("选择中心日期")
     with col_input:
         center_date_input = st.date_input(
-            "选择日期",
+            "选择中心日期",
             value=default_date,
             key="center_date",
             label_visibility="collapsed"
